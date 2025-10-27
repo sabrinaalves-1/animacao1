@@ -12,24 +12,22 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(#74d7f2, #d6f0ff);
-  font-family: 'Arial Rounded MT', sans-serif;
+  background: var(--color-black);
+  font-family: 'Press Start 2P', system-ui, monospace;
+  color: var(--color-white);
 }
 
-/* === CONTAINER DO INÍCIO === */
-.game-start {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+/* === TELA DE START === */
+.start-screen {
+  text-align: center;
 }
 
+/* Título estilo Flappy Bird */
 .title {
-  font-size: 48px;
-  font-weight: 900;
-  color: var(--color-black);
-  text-shadow: 3px 3px var(--accent);
-  margin: 0;
+  font-size: 32px;
+  color: var(--accent);
+  text-shadow: 3px 3px #000;
+  margin-bottom: 20px;
 }
 
 /* === GATO === */
@@ -37,6 +35,7 @@ html, body {
   position: relative;
   height: var(--size);
   width: calc(var(--size) * 1.13);
+  margin: 0 auto 25px auto;
 }
 
 /* Ears */
@@ -196,4 +195,47 @@ html, body {
 
 /* Muzzle */
 .muzzle {
-  p
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  height: 6%;
+  width: 10%;
+  background: var(--color-white);
+  transform: translateX(-50%);
+  border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+}
+
+/* === TEXTOS E BOTÕES === */
+.get-ready h2 {
+  font-size: 18px;
+  color: var(--accent);
+  margin: 0 0 15px 0;
+  text-shadow: 2px 2px #000;
+}
+
+.tap-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.tap-btn {
+  background: #ff3131;
+  color: #fff;
+  font-size: 14px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  box-shadow: 2px 2px 0 #000;
+}
+
+.tap-icon {
+  font-size: 18px;
+}
+
+.instructions {
+  color: var(--color-white);
+  font-size: 12px;
+  opacity: 0.8;
+}
