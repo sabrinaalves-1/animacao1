@@ -1,8 +1,7 @@
 :root {
-  --color-black: #161616;
-  --color-white: #fff;
+  --color-black: #000000; /* Fundo mais preto */
+  --color-white: #ffffff;
   --size: 170px;
-  --accent: #ffcc00;
 }
 
 /* === GERAL === */
@@ -25,16 +24,16 @@ html, body {
   align-items: center;
   justify-content: flex-start;
   height: 100%;
-  padding-top: 60px; /* 🆕 empurra o conteúdo um pouco para baixo */
+  padding-top: 60px;
   box-sizing: border-box;
 }
 
-/* Título estilo Flappy Bird */
+/* Título */
 .title {
   font-size: 32px;
-  color: var(--accent);
-  text-shadow: 3px 3px #000;
-  margin-bottom: 40px; /* 🆕 mais espaço entre título e gato */
+  color: var(--color-white);
+  text-shadow: 3px 3px #333;
+  margin-bottom: 40px;
 }
 
 /* === GATO === */
@@ -45,7 +44,7 @@ html, body {
   margin: 0 auto 25px auto;
 }
 
-/* Ears */
+/* Orelhas */
 .ear {
   position: absolute;
   top: -30%;
@@ -106,7 +105,7 @@ html, body {
   border-radius: 50%;
 }
 
-/* Eyes */
+/* Olhos */
 .eye {
   position: absolute;
   top: 35%;
@@ -163,7 +162,7 @@ html, body {
   left: -5%;
 }
 
-/* Pupils */
+/* Pupilas */
 .eye-pupil {
   position: absolute;
   top: 25%;
@@ -200,7 +199,7 @@ html, body {
   background: var(--color-white);
 }
 
-/* Muzzle */
+/* Focinho */
 .muzzle {
   position: absolute;
   top: 60%;
@@ -215,7 +214,7 @@ html, body {
 /* === TEXTOS E BOTÕES === */
 .get-ready h2 {
   font-size: 18px;
-  color: var(--accent);
+  color: var(--color-white);
   margin: 0 0 15px 0;
   text-shadow: 2px 2px #000;
 }
@@ -244,6 +243,8 @@ html, body {
 .instructions {
   color: var(--color-white);
   font-size: 12px;
-  opacity: 0.8;
+  opacity: 0.9;
   margin-top: 10px;
+  max-width: 260px;
+  line-height: 1.5;
 }
