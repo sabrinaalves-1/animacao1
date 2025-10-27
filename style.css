@@ -2,9 +2,37 @@
   --color-black: #161616;
   --color-white: #fff;
   --size: 170px;
+  --accent: #ffcc00;
 }
 
-/* Cat container */
+/* === GERAL === */
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(#74d7f2, #d6f0ff);
+  font-family: 'Arial Rounded MT', sans-serif;
+}
+
+/* === CONTAINER DO INÍCIO === */
+.game-start {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--color-black);
+  text-shadow: 3px 3px var(--accent);
+  margin: 0;
+}
+
+/* === GATO === */
 .cat {
   position: relative;
   height: var(--size);
@@ -168,22 +196,4 @@
 
 /* Muzzle */
 .muzzle {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  height: 6%;
-  width: 10%;
-  background: var(--color-white);
-  transform: translateX(-50%);
-  border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
-}
-
-/* General page styling */
-html, body {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-black);
-  margin: 0;
-}
+  p
