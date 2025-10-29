@@ -241,3 +241,19 @@ html, body {
   max-width: 260px;
   line-height: 1.5;
 }
+#gameCanvas {
+  display: none;
+  background: linear-gradient(#000015, #220022);
+  background-image: url('https://i.imgur.com/ZM4vTfG.png'); /* exemplo de fundo assombrado */
+  background-size: cover;
+  border: 3px solid #fff;
+  border-radius: 8px;
+}
+
+body.game-started .start-screen {
+  display: none;
+}
+
+body.game-started #gameCanvas {
+  display: block;
+}
