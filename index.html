@@ -11,17 +11,25 @@
   <div class="start-screen" id="startScreen">
     <h1 class="title">Fuga Assombrada</h1>
 
+    <!-- Restored CSS animated cat for start screen -->
     <div class="cat">
-      <div class="ear ear--left"></div>
-      <div class="ear ear--right"></div>
-      <div class="face">
-        <div class="eye eye--left">
-          <div class="eye-pupil"></div>
+      <div class="cat-body">
+        <div class="cat-head">
+          <div class="cat-ear cat-ear-left"></div>
+          <div class="cat-ear cat-ear-right"></div>
+          <div class="cat-face">
+            <div class="cat-eye cat-eye-left">
+              <div class="cat-pupil"></div>
+            </div>
+            <div class="cat-eye cat-eye-right">
+              <div class="cat-pupil"></div>
+            </div>
+            <div class="cat-nose"></div>
+            <div class="cat-mouth"></div>
+          </div>
         </div>
-        <div class="eye eye--right">
-          <div class="eye-pupil"></div>
-        </div>
-        <div class="muzzle"></div>
+        <div class="cat-body-main"></div>
+        <div class="cat-tail"></div>
       </div>
     </div>
 
@@ -54,12 +62,9 @@
       <!-- Pontuação -->
       <div class="score" id="score">0</div>
 
-      <!-- Gato jogador -->
+      <!-- Using image for player cat in game -->
       <div class="player-cat" id="playerCat">
-        <div class="cat-ear cat-ear--left"></div>
-        <div class="cat-ear cat-ear--right"></div>
-        <div class="cat-body"></div>
-        <div class="cat-tail"></div>
+        <img src="/images/cat.jpg" alt="Gato jogador">
       </div>
 
       <!-- Container de obstáculos -->
@@ -74,15 +79,10 @@
   <div class="game-over-screen" id="gameOverScreen">
     <h1 class="game-over-title">Game Over!</h1>
     
+    <!-- Using image for dead cat -->
     <div class="dead-cat">
       <div class="dead-cat-body">
-        <div class="dead-ear dead-ear--left"></div>
-        <div class="dead-ear dead-ear--right"></div>
-        <div class="dead-face">
-          <div class="dead-eye dead-eye--left">✕</div>
-          <div class="dead-eye dead-eye--right">✕</div>
-          <div class="dead-mouth">~</div>
-        </div>
+        <img src="/images/cat-dead.jpg" alt="Gato morto">
       </div>
     </div>
 
@@ -97,3 +97,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
