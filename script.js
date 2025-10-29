@@ -1,10 +1,5 @@
 // === CONFIGURAÇÕES DO CANVAS ===
-const canvas = document.createElement("canvas");
-canvas.width = 480;
-canvas.height = 640;
-canvas.id = "gameCanvas";
-document.body.appendChild(canvas);
-
+const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 // === VARIÁVEIS DO JOGO ===
@@ -32,10 +27,16 @@ imgZombieHand.src = "mao.png";
 const imgGhost = new Image();
 imgGhost.src = "fantasma.png";
 
+const imgTomb = new Image();
+imgTomb.src = "tumulo.png"; // imagem do túmulo
+
+// === TÚMULO ===
+const tombY = canvas.height - 100;
+
 // === PERSONAGEM ===
 const cat = {
   x: 80,
-  y: canvas.height / 2,
+  y: tombY,
   width: 60,
   height: 60,
   velocity: 0,
@@ -43,8 +44,8 @@ const cat = {
 };
 
 // === ARRAYS DE OBJETOS ===
-let obstacles = []; // mãos de zumbi
-let ghosts = []; // fantasmas
+let obstacles = [];
+let ghosts = [];
 
 // === EVENTOS DE CONTROLE ===
 document.addEventListener("keydown", (e) => {
@@ -58,7 +59,7 @@ function startOrJump() {
     return;
   }
   if (!gameStarted) {
-    document.querySelector(".start-screen").style.display = "none";
+    document.body.classList.add("game-started"); // mostrar canvas
     gameStarted = true;
     requestAnimationFrame(update);
   }
@@ -71,10 +72,16 @@ function update() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   drawBackground();
+  drawTomb();
 
-  // === FÍSICA DO GATO ===
-  cat.velocity += gravity;
-  cat.y += cat.velocity;
+  // === GATO SAINDO DO TÚMULO ===
+  if (gameStarted && cat.y > canvas.height / 2) {
+    cat.y -= 4; // sobe suavemente
+  } else {
+    cat.velocity += gravity;
+    cat.y += cat.velocity;
+  }
+
   drawCat();
 
   // === GERAR OBSTÁCULOS ===
@@ -120,7 +127,7 @@ function update() {
   }
 
   // === PONTUAÇÃO ===
-  score++;
+  if (gameStarted && cat.y <= canvas.height / 2) score++;
   ctx.fillStyle = "#fff";
   ctx.font = '18px "Press Start 2P"';
   ctx.fillText(`Pontos: ${Math.floor(score / 10)}`, 20, 30);
@@ -134,7 +141,7 @@ function update() {
   if (!gameOverState) requestAnimationFrame(update);
 }
 
-// === DESENHAR FUNDO COM MOVIMENTO ===
+// === FUNÇÕES DE DESENHO ===
 function drawBackground() {
   const bgWidth = canvas.width;
   const offset = (frame * 2) % bgWidth;
@@ -142,18 +149,19 @@ function drawBackground() {
   ctx.drawImage(imgBackground, bgWidth - offset, 0, bgWidth, canvas.height);
 }
 
-// === DESENHAR O GATO ===
+function drawTomb() {
+  ctx.drawImage(imgTomb, cat.x - 10, tombY + 30, 80, 50);
+}
+
 function drawCat() {
   if (!cat.alive) return;
   ctx.drawImage(imgCat, cat.x, cat.y, cat.width, cat.height);
 }
 
-// === DESENHAR MÃO DE ZUMBI ===
 function drawZombieHand(x, y, w, h) {
   ctx.drawImage(imgZombieHand, x, y, w, h);
 }
 
-// === DESENHAR FANTASMA ===
 function drawGhost(x, y, w, h) {
   ctx.drawImage(imgGhost, x, y, w, h);
 }
@@ -197,4 +205,3 @@ function gameOver() {
     canvas.height / 2 + 110
   );
 }
-
