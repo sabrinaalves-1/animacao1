@@ -18,16 +18,16 @@ let frame = 0;
 
 // === IMAGENS ===
 const imgBackground = new Image();
-imgBackground.src = "fundo_halloween.png";
+imgBackground.src = "cenario.png";
 
 const imgCat = new Image();
 imgCat.src = "gato.png";
 
 const imgCatDead = new Image();
-imgCatDead.src = "gato_gameover.png";
+imgCatDead.src = "gato2.png";
 
 const imgZombieHand = new Image();
-imgZombieHand.src = "mao_zumbi.png";
+imgZombieHand.src = "mao.png";
 
 const imgGhost = new Image();
 imgGhost.src = "fantasma.png";
