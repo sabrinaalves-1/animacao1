@@ -7,7 +7,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="start-screen">
+  <!-- Tela de Início -->
+  <div class="start-screen" id="startScreen">
     <h1 class="title">Fuga Assombrada</h1>
 
     <div class="cat">
@@ -32,14 +33,66 @@
       </div>
 
       <p class="instructions">
-        Toque na tela ou pressione <strong>ESPAÇO</strong> várias vezes para fazer o gato pular!<br>
-        Mantenha o ritmo para não deixar ele cair!
+        Toque na tela ou pressione <strong>ESPAÇO</strong> para fazer o gato pular!<br>
+        Desvie das mãos de zumbi e dos fantasmas!
       </p>
+
+      <button class="start-button" id="startButton">COMEÇAR</button>
     </div>
   </div>
-  
-  <!-- Canvas do jogo -->
-  <canvas id="gameCanvas" width="480" height="640"></canvas>
+
+  <!-- Tela do Jogo -->
+  <div class="game-screen" id="gameScreen">
+    <div class="game-container">
+      <!-- Cenário de fundo -->
+      <div class="background">
+        <div class="moon"></div>
+        <div class="stars"></div>
+        <div class="ground"></div>
+      </div>
+
+      <!-- Pontuação -->
+      <div class="score" id="score">0</div>
+
+      <!-- Gato jogador -->
+      <div class="player-cat" id="playerCat">
+        <div class="cat-ear cat-ear--left"></div>
+        <div class="cat-ear cat-ear--right"></div>
+        <div class="cat-body"></div>
+        <div class="cat-tail"></div>
+      </div>
+
+      <!-- Container de obstáculos -->
+      <div class="obstacles" id="obstacles"></div>
+
+      <!-- Container de fantasmas -->
+      <div class="ghosts" id="ghosts"></div>
+    </div>
+  </div>
+
+  <!-- Tela de Game Over -->
+  <div class="game-over-screen" id="gameOverScreen">
+    <h1 class="game-over-title">Game Over!</h1>
+    
+    <div class="dead-cat">
+      <div class="dead-cat-body">
+        <div class="dead-ear dead-ear--left"></div>
+        <div class="dead-ear dead-ear--right"></div>
+        <div class="dead-face">
+          <div class="dead-eye dead-eye--left">✕</div>
+          <div class="dead-eye dead-eye--right">✕</div>
+          <div class="dead-mouth">~</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="final-score">
+      <p>Pontuação Final:</p>
+      <h2 id="finalScore">0</h2>
+    </div>
+
+    <button class="restart-button" id="restartButton">JOGAR NOVAMENTE</button>
+  </div>
 
   <script src="script.js"></script>
 </body>
