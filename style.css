@@ -1,43 +1,68 @@
 :root {
-  --color-black: #000000; /* Fundo mais preto */
+  --color-black: #000000;
   --color-white: #ffffff;
+  --color-orange: #ff6b35;
+  --color-purple: #6a0dad;
+  --color-green: #2d5016;
   --size: 170px;
 }
 
 /* === GERAL === */
-html, body {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
   height: 100%;
   margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-black);
-  font-family: 'Press Start 2P', system-ui, monospace;
+  overflow: hidden;
+  background: #0a0a0a;
+  font-family: "Press Start 2P", "Courier New", monospace;
   color: var(--color-white);
 }
 
 /* === TELA DE START === */
 .start-screen {
-  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  height: 100%;
-  padding-top: 20px;
-  box-sizing: border-box;
+  background: linear-gradient(180deg, #1a0033 0%, #0a0a0a 100%);
+  padding-top: 40px;
+  z-index: 100;
+}
+
+.start-screen.hidden {
+  display: none;
 }
 
 /* Título */
 .title {
   font-size: 32px;
-  color: var(--color-white);
-  text-shadow: 3px 3px #333;
-  margin-top: 10px;
-  margin-bottom: 60px;
+  color: var(--color-orange);
+  text-shadow: 3px 3px #000, 0 0 20px var(--color-orange);
+  margin-bottom: 40px;
+  animation: glow 2s ease-in-out infinite alternate;
 }
 
-/* === GATO === */
+@keyframes glow {
+  from {
+    text-shadow: 3px 3px #000, 0 0 20px var(--color-orange);
+  }
+  to {
+    text-shadow: 3px 3px #000, 0 0 30px var(--color-orange), 0 0 40px var(--color-orange);
+  }
+}
+
+/* === GATO DA TELA INICIAL === */
 .cat {
   position: relative;
   height: var(--size);
@@ -45,7 +70,6 @@ html, body {
   margin: 0 auto 25px auto;
 }
 
-/* Orelhas */
 .ear {
   position: absolute;
   top: -30%;
@@ -56,7 +80,7 @@ html, body {
 
 .ear::before,
 .ear::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 24%;
   height: 10%;
@@ -97,7 +121,6 @@ html, body {
   transform: rotate(45deg);
 }
 
-/* Face */
 .face {
   position: absolute;
   height: 100%;
@@ -106,7 +129,6 @@ html, body {
   border-radius: 50%;
 }
 
-/* Olhos */
 .eye {
   position: absolute;
   top: 35%;
@@ -118,7 +140,7 @@ html, body {
 }
 
 .eye::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -130,15 +152,26 @@ html, body {
 }
 
 @keyframes blink {
-  0%, 90% { height: 0; }
-  92.5% { height: 100%; }
-  95% { height: 0; }
-  97.5% { height: 100%; }
-  100% { height: 0; }
+  0%,
+  90% {
+    height: 0;
+  }
+  92.5% {
+    height: 100%;
+  }
+  95% {
+    height: 0;
+  }
+  97.5% {
+    height: 100%;
+  }
+  100% {
+    height: 0;
+  }
 }
 
 .eye::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 60%;
   height: 10%;
@@ -163,7 +196,6 @@ html, body {
   left: -5%;
 }
 
-/* Pupilas */
 .eye-pupil {
   position: absolute;
   top: 25%;
@@ -175,10 +207,21 @@ html, body {
 }
 
 @keyframes look-around {
-  0% { transform: translate(0, 0); }
-  5%, 10% { transform: translate(50%, -25%); }
-  15%, 20% { transform: translate(-100%, -25%); }
-  25%, 100% { transform: translate(0, 0); }
+  0% {
+    transform: translate(0, 0);
+  }
+  5%,
+  10% {
+    transform: translate(50%, -25%);
+  }
+  15%,
+  20% {
+    transform: translate(-100%, -25%);
+  }
+  25%,
+  100% {
+    transform: translate(0, 0);
+  }
 }
 
 .eye--left .eye-pupil {
@@ -190,7 +233,7 @@ html, body {
 }
 
 .eye-pupil::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 30%;
   right: -5%;
@@ -200,7 +243,6 @@ html, body {
   background: var(--color-white);
 }
 
-/* Focinho */
 .muzzle {
   position: absolute;
   top: 60%;
@@ -212,7 +254,7 @@ html, body {
   border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
 }
 
-/* === TEXTO E INDICAÇÃO DE TOQUE === */
+/* === TEXTO E BOTÃO === */
 .get-ready h2 {
   font-size: 18px;
   color: var(--color-white);
@@ -220,42 +262,459 @@ html, body {
   text-shadow: 2px 2px #000;
 }
 
-/* Indicador de toque */
 .tap-indicator {
   font-size: 28px;
-  margin-top: 30px;
+  margin-top: 20px;
   animation: pulse 1.2s infinite alternate ease-in-out;
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); opacity: 0.6; }
-  100% { transform: scale(1.3); opacity: 1; }
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
 }
 
-/* Texto explicativo */
 .instructions {
   color: var(--color-white);
-  font-size: 12px;
+  font-size: 11px;
   opacity: 0.9;
   margin-top: 20px;
-  max-width: 260px;
-  line-height: 1.5;
+  max-width: 300px;
+  line-height: 1.6;
 }
 
-/* === CANVAS DO JOGO === */
-#gameCanvas {
+.start-button {
+  margin-top: 30px;
+  padding: 15px 40px;
+  font-size: 16px;
+  font-family: inherit;
+  background: var(--color-orange);
+  color: var(--color-white);
+  border: 3px solid var(--color-white);
+  border-radius: 10px;
+  cursor: pointer;
+  text-shadow: 2px 2px #000;
+  box-shadow: 0 5px 0 #8b3a1a, 0 8px 20px rgba(0, 0, 0, 0.5);
+  transition: transform 0.1s;
+}
+
+.start-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 #8b3a1a, 0 10px 25px rgba(0, 0, 0, 0.6);
+}
+
+.start-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #8b3a1a, 0 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* === TELA DO JOGO === */
+.game-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: none;
-  background: linear-gradient(#000015, #220022);
-  background-image: url('https://i.imgur.com/ZM4vTfG.png'); /* exemplo de fundo assombrado */
-  background-size: cover;
-  border: 3px solid #fff;
-  border-radius: 8px;
 }
 
-body.game-started .start-screen {
-  display: none;
-}
-
-body.game-started #gameCanvas {
+.game-screen.active {
   display: block;
+}
+
+.game-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Cenário de fundo */
+.background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #1a0033 0%, #2d1b4e 50%, #1a0033 100%);
+}
+
+.moon {
+  position: absolute;
+  top: 50px;
+  right: 80px;
+  width: 80px;
+  height: 80px;
+  background: #f4f1de;
+  border-radius: 50%;
+  box-shadow: 0 0 40px rgba(244, 241, 222, 0.6);
+}
+
+.stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent), radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent), radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 80%, white, transparent), radial-gradient(1px 1px at 15% 15%, white, transparent);
+  background-size: 200% 200%;
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.ground {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 80px;
+  background: var(--color-green);
+  border-top: 4px solid #1a3a0f;
+}
+
+/* Pontuação */
+.score {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 48px;
+  color: var(--color-white);
+  text-shadow: 3px 3px #000, 0 0 10px var(--color-orange);
+  z-index: 10;
+}
+
+/* Gato jogador */
+.player-cat {
+  position: absolute;
+  left: 100px;
+  width: 50px;
+  height: 50px;
+  transition: transform 0.1s;
+  z-index: 5;
+}
+
+.cat-ear {
+  position: absolute;
+  width: 15px;
+  height: 20px;
+  background: var(--color-white);
+  top: -10px;
+}
+
+.cat-ear--left {
+  left: 5px;
+  border-radius: 10px 0 0 0;
+  transform: rotate(-20deg);
+}
+
+.cat-ear--right {
+  right: 5px;
+  border-radius: 0 10px 0 0;
+  transform: rotate(20deg);
+}
+
+.cat-body {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: var(--color-black);
+  border-radius: 50%;
+  border: 3px solid var(--color-white);
+}
+
+.cat-body::before {
+  content: "👁️";
+  position: absolute;
+  left: 10px;
+  top: 15px;
+  font-size: 10px;
+}
+
+.cat-body::after {
+  content: "👁️";
+  position: absolute;
+  right: 10px;
+  top: 15px;
+  font-size: 10px;
+}
+
+.cat-tail {
+  position: absolute;
+  right: -15px;
+  top: 20px;
+  width: 20px;
+  height: 8px;
+  background: var(--color-black);
+  border-radius: 0 10px 10px 0;
+  border: 2px solid var(--color-white);
+  border-left: none;
+}
+
+/* Obstáculos - Mãos de Zumbi */
+.obstacle {
+  position: absolute;
+  width: 80px;
+  z-index: 3;
+}
+
+.zombie-hand {
+  position: absolute;
+  width: 80px;
+  background: #7a9b76;
+  border: 3px solid #4a5f47;
+  border-radius: 10px;
+}
+
+.zombie-hand.top {
+  bottom: 0;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.zombie-hand.bottom {
+  top: 0;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.zombie-hand::before {
+  content: "🧟";
+  position: absolute;
+  font-size: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.zombie-hand.top::before {
+  bottom: -10px;
+}
+
+.zombie-hand.bottom::before {
+  top: -10px;
+}
+
+/* Fantasmas */
+.ghost {
+  position: absolute;
+  width: 40px;
+  height: 50px;
+  z-index: 4;
+  animation: float 1s ease-in-out infinite alternate;
+}
+
+@keyframes float {
+  from {
+    transform: translateY(-5px);
+  }
+  to {
+    transform: translateY(5px);
+  }
+}
+
+.ghost-body {
+  width: 40px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px 20px 0 0;
+  position: relative;
+}
+
+.ghost-body::before {
+  content: "👻";
+  position: absolute;
+  font-size: 35px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ghost-body::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(
+    135deg,
+    transparent 33.33%,
+    rgba(255, 255, 255, 0.8) 33.33%,
+    rgba(255, 255, 255, 0.8) 66.66%,
+    transparent 66.66%
+  );
+  background-size: 12px 10px;
+}
+
+/* === TELA DE GAME OVER === */
+.game-over-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 200;
+}
+
+.game-over-screen.active {
+  display: flex;
+}
+
+.game-over-title {
+  font-size: 36px;
+  color: #ff0000;
+  text-shadow: 3px 3px #000, 0 0 20px #ff0000;
+  margin-bottom: 30px;
+  animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* Gato Morto */
+.dead-cat {
+  margin-bottom: 30px;
+}
+
+.dead-cat-body {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  background: var(--color-black);
+  border-radius: 50%;
+  border: 4px solid #666;
+  transform: rotate(-15deg);
+}
+
+.dead-ear {
+  position: absolute;
+  width: 30px;
+  height: 40px;
+  background: #666;
+  top: -20px;
+}
+
+.dead-ear--left {
+  left: 10px;
+  border-radius: 15px 0 0 0;
+  transform: rotate(-30deg);
+}
+
+.dead-ear--right {
+  right: 10px;
+  border-radius: 0 15px 0 0;
+  transform: rotate(30deg);
+}
+
+.dead-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dead-eye {
+  font-size: 30px;
+  color: #ff0000;
+  margin: 5px 10px;
+}
+
+.dead-eye--left,
+.dead-eye--right {
+  display: inline-block;
+}
+
+.dead-mouth {
+  font-size: 24px;
+  color: #666;
+  margin-top: 10px;
+}
+
+/* Pontuação Final */
+.final-score {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.final-score p {
+  font-size: 14px;
+  color: var(--color-white);
+  margin-bottom: 10px;
+}
+
+.final-score h2 {
+  font-size: 48px;
+  color: var(--color-orange);
+  text-shadow: 3px 3px #000, 0 0 20px var(--color-orange);
+}
+
+/* Botão Reiniciar */
+.restart-button {
+  padding: 15px 40px;
+  font-size: 16px;
+  font-family: inherit;
+  background: var(--color-purple);
+  color: var(--color-white);
+  border: 3px solid var(--color-white);
+  border-radius: 10px;
+  cursor: pointer;
+  text-shadow: 2px 2px #000;
+  box-shadow: 0 5px 0 #3d0066, 0 8px 20px rgba(0, 0, 0, 0.5);
+  transition: transform 0.1s;
+}
+
+.restart-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 #3d0066, 0 10px 25px rgba(0, 0, 0, 0.6);
+}
+
+.restart-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #3d0066, 0 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .title {
+    font-size: 24px;
+  }
+
+  .instructions {
+    font-size: 10px;
+    max-width: 250px;
+  }
+
+  .score {
+    font-size: 36px;
+  }
 }
