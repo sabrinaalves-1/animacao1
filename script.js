@@ -12,23 +12,34 @@ let score = 0;
 let frame = 0;
 
 // === IMAGENS ===
-const imgBackground = new Image();
-imgBackground.src = "cenario.png";
+const imagesToLoad = {
+  imgBackground: "cenario.png",
+  imgCat: "gato.png",
+  imgCatDead: "gato2.png",
+  imgZombieHand: "mao.png",
+  imgGhost: "fantasma.png",
+  imgTomb: "tumulo.png",
+};
 
-const imgCat = new Image();
-imgCat.src = "gato.png";
+const imgs = {};
 
-const imgCatDead = new Image();
-imgCatDead.src = "gato2.png";
+function carregarImagens(imagens) {
+  const promises = [];
 
-const imgZombieHand = new Image();
-imgZombieHand.src = "mao.png";
+  for (const key in imagens) {
+    promises.push(
+      new Promise((resolve, reject) => {
+        imgs[key] = new Image();
+        imgs[key].src = imagens[key];
+        imgs[key].onload = () => resolve();
+        imgs[key].onerror = () =>
+          reject(new Error(`Erro ao carregar imagem: ${imagens[key]}`));
+      })
+    );
+  }
 
-const imgGhost = new Image();
-imgGhost.src = "fantasma.png";
-
-const imgTomb = new Image();
-imgTomb.src = "tumulo.png"; // imagem do túmulo
+  return Promise.all(promises);
+}
 
 // === TÚMULO ===
 const tombY = canvas.height - 100;
@@ -59,7 +70,7 @@ function startOrJump() {
     return;
   }
   if (!gameStarted) {
-    document.body.classList.add("game-started"); // mostrar canvas
+    document.body.classList.add("game-started"); // mostrar canvas se tiver CSS relacionado
     gameStarted = true;
     requestAnimationFrame(update);
   }
@@ -129,7 +140,7 @@ function update() {
   // === PONTUAÇÃO ===
   if (gameStarted && cat.y <= canvas.height / 2) score++;
   ctx.fillStyle = "#fff";
-  ctx.font = '18px "Press Start 2P"';
+  ctx.font = '18px "Press Start 2P", cursive, monospace';
   ctx.fillText(`Pontos: ${Math.floor(score / 10)}`, 20, 30);
 
   // === VERIFICAR LIMITES ===
@@ -145,25 +156,25 @@ function update() {
 function drawBackground() {
   const bgWidth = canvas.width;
   const offset = (frame * 2) % bgWidth;
-  ctx.drawImage(imgBackground, -offset, 0, bgWidth, canvas.height);
-  ctx.drawImage(imgBackground, bgWidth - offset, 0, bgWidth, canvas.height);
+  ctx.drawImage(imgs.imgBackground, -offset, 0, bgWidth, canvas.height);
+  ctx.drawImage(imgs.imgBackground, bgWidth - offset, 0, bgWidth, canvas.height);
 }
 
 function drawTomb() {
-  ctx.drawImage(imgTomb, cat.x - 10, tombY + 30, 80, 50);
+  ctx.drawImage(imgs.imgTomb, cat.x - 10, tombY + 30, 80, 50);
 }
 
 function drawCat() {
   if (!cat.alive) return;
-  ctx.drawImage(imgCat, cat.x, cat.y, cat.width, cat.height);
+  ctx.drawImage(imgs.imgCat, cat.x, cat.y, cat.width, cat.height);
 }
 
 function drawZombieHand(x, y, w, h) {
-  ctx.drawImage(imgZombieHand, x, y, w, h);
+  ctx.drawImage(imgs.imgZombieHand, x, y, w, h);
 }
 
 function drawGhost(x, y, w, h) {
-  ctx.drawImage(imgGhost, x, y, w, h);
+  ctx.drawImage(imgs.imgGhost, x, y, w, h);
 }
 
 // === COLISÃO ===
@@ -186,7 +197,7 @@ function gameOver() {
 
   const imgSize = 130;
   ctx.drawImage(
-    imgCatDead,
+    imgs.imgCatDead,
     canvas.width / 2 - imgSize / 2,
     canvas.height / 2 - imgSize / 2 - 40,
     imgSize,
@@ -194,14 +205,23 @@ function gameOver() {
   );
 
   ctx.fillStyle = "#ff3333";
-  ctx.font = '22px "Press Start 2P"';
+  ctx.font = '22px "Press Start 2P", cursive, monospace';
   ctx.fillText("GAME OVER", canvas.width / 2 - 110, canvas.height / 2 + 70);
 
   ctx.fillStyle = "#fff";
-  ctx.font = '12px "Press Start 2P"';
-  ctx.fillText(
-    "Pressione ESPAÇO para reiniciar",
-    40,
-    canvas.height / 2 + 110
-  );
+  ctx.font = '12px "Press Start 2P", cursive, monospace';
+  ctx.fillText("Pressione ESPAÇO para reiniciar", 40, canvas.height / 2 + 110);
 }
+
+// === INICIALIZAÇÃO ===
+carregarImagens(imagesToLoad)
+  .then(() => {
+    console.log("Todas as imagens carregadas com sucesso.");
+    // Opcional: desenhar tela inicial ou aguardar input
+  })
+  .catch((erro) => {
+    console.error(erro);
+    ctx.fillStyle = "red";
+    ctx.font = "24px Arial";
+    ctx.fillText("Erro ao carregar imagens. Atualize a página.", 20, canvas.height / 2);
+  });
