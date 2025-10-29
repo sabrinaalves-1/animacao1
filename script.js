@@ -1,227 +1,253 @@
-// === CONFIGURAÇÕES DO CANVAS ===
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+// Elementos do DOM
+const startScreen = document.getElementById("startScreen")
+const gameScreen = document.getElementById("gameScreen")
+const gameOverScreen = document.getElementById("gameOverScreen")
+const startButton = document.getElementById("startButton")
+const restartButton = document.getElementById("restartButton")
+const playerCat = document.getElementById("playerCat")
+const obstaclesContainer = document.getElementById("obstacles")
+const ghostsContainer = document.getElementById("ghosts")
+const scoreElement = document.getElementById("score")
+const finalScoreElement = document.getElementById("finalScore")
 
-// === VARIÁVEIS DO JOGO ===
-let gameStarted = false;
-let gameOverState = false;
+// Variáveis do jogo
+let gameLoop
+let obstacleLoop
+let ghostLoop
+let isGameRunning = false
+let score = 0
+let catY = 250
+let catVelocity = 0
+const gravity = 0.6
+const jumpStrength = -10
+const catX = 100
 
-let gravity = 0.5;
-let jumpForce = -8;
-let score = 0;
-let frame = 0;
+// Arrays para armazenar obstáculos e fantasmas
+let obstacles = []
+let ghosts = []
 
-// === IMAGENS ===
-const imagesToLoad = {
-  imgBackground: "cenario.png",
-  imgCat: "gato.png",
-  imgCatDead: "gato2.png",
-  imgZombieHand: "mao.png",
-  imgGhost: "fantasma.png",
-  imgTomb: "tumulo.png",
-};
+// Iniciar o jogo
+startButton.addEventListener("click", startGame)
+restartButton.addEventListener("click", restartGame)
 
-const imgs = {};
-
-function carregarImagens(imagens) {
-  const promises = [];
-
-  for (const key in imagens) {
-    promises.push(
-      new Promise((resolve, reject) => {
-        imgs[key] = new Image();
-        imgs[key].src = imagens[key];
-        imgs[key].onload = () => resolve();
-        imgs[key].onerror = () =>
-          reject(new Error(`Erro ao carregar imagem: ${imagens[key]}`));
-      })
-    );
-  }
-
-  return Promise.all(promises);
-}
-
-// === TÚMULO ===
-const tombY = canvas.height - 100;
-
-// === PERSONAGEM ===
-const cat = {
-  x: 80,
-  y: tombY,
-  width: 60,
-  height: 60,
-  velocity: 0,
-  alive: true,
-};
-
-// === ARRAYS DE OBJETOS ===
-let obstacles = [];
-let ghosts = [];
-
-// === EVENTOS DE CONTROLE ===
+// Controles
 document.addEventListener("keydown", (e) => {
-  if (e.code === "Space") startOrJump();
-});
-document.addEventListener("click", startOrJump);
+  if (e.code === "Space" && isGameRunning) {
+    e.preventDefault()
+    jump()
+  }
+})
 
-function startOrJump() {
-  if (gameOverState) {
-    location.reload();
-    return;
+document.addEventListener("click", (e) => {
+  if (isGameRunning && !e.target.closest("button")) {
+    jump()
   }
-  if (!gameStarted) {
-    document.body.classList.add("game-started"); // mostrar canvas se tiver CSS relacionado
-    gameStarted = true;
-    requestAnimationFrame(update);
-  }
-  cat.velocity = jumpForce;
+})
+
+function startGame() {
+  // Esconder tela inicial e mostrar jogo
+  startScreen.classList.add("hidden")
+  gameScreen.classList.add("active")
+
+  // Resetar variáveis
+  score = 0
+  catY = 250
+  catVelocity = 0
+  obstacles = []
+  ghosts = []
+  obstaclesContainer.innerHTML = ""
+  ghostsContainer.innerHTML = ""
+  scoreElement.textContent = score
+
+  isGameRunning = true
+
+  // Iniciar loops do jogo
+  gameLoop = setInterval(updateGame, 1000 / 60) // 60 FPS
+  obstacleLoop = setInterval(createObstacle, 2000) // Novo obstáculo a cada 2s
+  ghostLoop = setInterval(createGhost, 3500) // Novo fantasma a cada 3.5s
 }
 
-// === LOOP PRINCIPAL ===
-function update() {
-  frame++;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+function jump() {
+  catVelocity = jumpStrength
+}
 
-  drawBackground();
-  drawTomb();
+function updateGame() {
+  // Atualizar física do gato
+  catVelocity += gravity
+  catY += catVelocity
 
-  // === GATO SAINDO DO TÚMULO ===
-  if (gameStarted && cat.y > canvas.height / 2) {
-    cat.y -= 4; // sobe suavemente
-  } else {
-    cat.velocity += gravity;
-    cat.y += cat.velocity;
-  }
-
-  drawCat();
-
-  // === GERAR OBSTÁCULOS ===
-  if (frame % 100 === 0) {
-    let gap = 150;
-    let topHeight = Math.random() * (canvas.height - gap - 120) + 60;
-    obstacles.push({ x: canvas.width, y: 0, width: 70, height: topHeight });
-    obstacles.push({
-      x: canvas.width,
-      y: topHeight + gap,
-      width: 70,
-      height: canvas.height - topHeight - gap,
-    });
-  }
-
-  // === GERAR FANTASMAS ===
-  if (frame % 200 === 0) {
-    ghosts.push({
-      x: canvas.width,
-      y: Math.random() * (canvas.height - 100),
-      width: 50,
-      height: 50,
-      speed: 6 + Math.random() * 2,
-    });
+  // Limitar posição do gato
+  if (catY < 0) {
+    catY = 0
+    catVelocity = 0
   }
 
-  // === ATUALIZAR E DESENHAR OBSTÁCULOS ===
-  for (let i = obstacles.length - 1; i >= 0; i--) {
-    const o = obstacles[i];
-    o.x -= 3;
-    drawZombieHand(o.x, o.y, o.width, o.height);
-    if (checkCollision(cat, o)) return gameOver();
-    if (o.x + o.width < 0) obstacles.splice(i, 1);
+  if (catY > window.innerHeight - 130) {
+    // 80px do chão + 50px do gato
+    gameOver()
+    return
   }
 
-  // === ATUALIZAR E DESENHAR FANTASMAS ===
-  for (let i = ghosts.length - 1; i >= 0; i--) {
-    const g = ghosts[i];
-    g.x -= g.speed;
-    drawGhost(g.x, g.y, g.width, g.height);
-    if (checkCollision(cat, g)) return gameOver();
-    if (g.x + g.width < 0) ghosts.splice(i, 1);
-  }
+  // Atualizar posição visual do gato
+  playerCat.style.top = catY + "px"
 
-  // === PONTUAÇÃO ===
-  if (gameStarted && cat.y <= canvas.height / 2) score++;
-  ctx.fillStyle = "#fff";
-  ctx.font = '18px "Press Start 2P", cursive, monospace';
-  ctx.fillText(`Pontos: ${Math.floor(score / 10)}`, 20, 30);
+  // Rotação do gato baseada na velocidade
+  const rotation = Math.min(Math.max(catVelocity * 3, -30), 30)
+  playerCat.style.transform = `rotate(${rotation}deg)`
 
-  // === VERIFICAR LIMITES ===
-  if (cat.y + cat.height > canvas.height || cat.y < 0) {
-    gameOver();
-    return;
-  }
+  // Atualizar obstáculos
+  updateObstacles()
 
-  if (!gameOverState) requestAnimationFrame(update);
+  // Atualizar fantasmas
+  updateGhosts()
 }
 
-// === FUNÇÕES DE DESENHO ===
-function drawBackground() {
-  const bgWidth = canvas.width;
-  const offset = (frame * 2) % bgWidth;
-  ctx.drawImage(imgs.imgBackground, -offset, 0, bgWidth, canvas.height);
-  ctx.drawImage(imgs.imgBackground, bgWidth - offset, 0, bgWidth, canvas.height);
-}
+function createObstacle() {
+  if (!isGameRunning) return
 
-function drawTomb() {
-  ctx.drawImage(imgs.imgTomb, cat.x - 10, tombY + 30, 80, 50);
-}
+  const obstacle = document.createElement("div")
+  obstacle.className = "obstacle"
 
-function drawCat() {
-  if (!cat.alive) return;
-  ctx.drawImage(imgs.imgCat, cat.x, cat.y, cat.width, cat.height);
-}
+  const gap = 180 // Espaço entre as mãos
+  const minHeight = 100
+  const maxHeight = window.innerHeight - gap - 180 // 80px do chão + 100px mínimo
+  const topHeight = Math.random() * (maxHeight - minHeight) + minHeight
 
-function drawZombieHand(x, y, w, h) {
-  ctx.drawImage(imgs.imgZombieHand, x, y, w, h);
-}
+  obstacle.innerHTML = `
+    <div class="zombie-hand top" style="height: ${topHeight}px;"></div>
+    <div class="zombie-hand bottom" style="height: ${window.innerHeight - topHeight - gap - 80}px; top: ${topHeight + gap}px;"></div>
+  `
 
-function drawGhost(x, y, w, h) {
-  ctx.drawImage(imgs.imgGhost, x, y, w, h);
-}
+  obstacle.style.right = "-80px"
+  obstaclesContainer.appendChild(obstacle)
 
-// === COLISÃO ===
-function checkCollision(a, b) {
-  return (
-    a.x < b.x + b.width &&
-    a.x + a.width > b.x &&
-    a.y < b.y + b.height &&
-    a.y + a.height > b.y
-  );
-}
-
-// === GAME OVER ===
-function gameOver() {
-  cat.alive = false;
-  gameOverState = true;
-
-  ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  const imgSize = 130;
-  ctx.drawImage(
-    imgs.imgCatDead,
-    canvas.width / 2 - imgSize / 2,
-    canvas.height / 2 - imgSize / 2 - 40,
-    imgSize,
-    imgSize
-  );
-
-  ctx.fillStyle = "#ff3333";
-  ctx.font = '22px "Press Start 2P", cursive, monospace';
-  ctx.fillText("GAME OVER", canvas.width / 2 - 110, canvas.height / 2 + 70);
-
-  ctx.fillStyle = "#fff";
-  ctx.font = '12px "Press Start 2P", cursive, monospace';
-  ctx.fillText("Pressione ESPAÇO para reiniciar", 40, canvas.height / 2 + 110);
-}
-
-// === INICIALIZAÇÃO ===
-carregarImagens(imagesToLoad)
-  .then(() => {
-    console.log("Todas as imagens carregadas com sucesso.");
-    // Opcional: desenhar tela inicial ou aguardar input
+  obstacles.push({
+    element: obstacle,
+    x: window.innerWidth,
+    scored: false,
+    topHeight: topHeight,
+    gap: gap,
   })
-  .catch((erro) => {
-    console.error(erro);
-    ctx.fillStyle = "red";
-    ctx.font = "24px Arial";
-    ctx.fillText("Erro ao carregar imagens. Atualize a página.", 20, canvas.height / 2);
-  });
+}
+
+function updateObstacles() {
+  obstacles.forEach((obstacle, index) => {
+    obstacle.x -= 3 // Velocidade do obstáculo
+    obstacle.element.style.right = window.innerWidth - obstacle.x + "px"
+
+    // Verificar pontuação
+    if (!obstacle.scored && obstacle.x < catX) {
+      obstacle.scored = true
+      score++
+      scoreElement.textContent = score
+    }
+
+    // Verificar colisão
+    if (checkCollisionWithObstacle(obstacle)) {
+      gameOver()
+    }
+
+    // Remover obstáculos fora da tela
+    if (obstacle.x < -80) {
+      obstacle.element.remove()
+      obstacles.splice(index, 1)
+    }
+  })
+}
+
+function createGhost() {
+  if (!isGameRunning) return
+
+  const ghost = document.createElement("div")
+  ghost.className = "ghost"
+  ghost.innerHTML = '<div class="ghost-body"></div>'
+
+  const ghostY = Math.random() * (window.innerHeight - 200) + 50
+  ghost.style.top = ghostY + "px"
+  ghost.style.right = "-40px"
+
+  ghostsContainer.appendChild(ghost)
+
+  ghosts.push({
+    element: ghost,
+    x: window.innerWidth,
+    y: ghostY,
+  })
+}
+
+function updateGhosts() {
+  ghosts.forEach((ghost, index) => {
+    ghost.x -= 8 // Fantasmas são mais rápidos
+    ghost.element.style.right = window.innerWidth - ghost.x + "px"
+
+    // Verificar colisão
+    if (checkCollisionWithGhost(ghost)) {
+      gameOver()
+    }
+
+    // Remover fantasmas fora da tela
+    if (ghost.x < -40) {
+      ghost.element.remove()
+      ghosts.splice(index, 1)
+    }
+  })
+}
+
+function checkCollisionWithObstacle(obstacle) {
+  const catLeft = catX
+  const catRight = catX + 50
+  const catTop = catY
+  const catBottom = catY + 50
+
+  const obstacleLeft = obstacle.x
+  const obstacleRight = obstacle.x + 80
+
+  // Verificar se o gato está na área horizontal do obstáculo
+  if (catRight > obstacleLeft && catLeft < obstacleRight) {
+    // Verificar colisão com a mão de cima
+    if (catTop < obstacle.topHeight) {
+      return true
+    }
+    // Verificar colisão com a mão de baixo
+    if (catBottom > obstacle.topHeight + obstacle.gap) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function checkCollisionWithGhost(ghost) {
+  const catLeft = catX
+  const catRight = catX + 50
+  const catTop = catY
+  const catBottom = catY + 50
+
+  const ghostLeft = ghost.x
+  const ghostRight = ghost.x + 40
+  const ghostTop = ghost.y
+  const ghostBottom = ghost.y + 50
+
+  return catRight > ghostLeft && catLeft < ghostRight && catBottom > ghostTop && catTop < ghostBottom
+}
+
+function gameOver() {
+  isGameRunning = false
+
+  // Parar todos os loops
+  clearInterval(gameLoop)
+  clearInterval(obstacleLoop)
+  clearInterval(ghostLoop)
+
+  // Mostrar tela de game over
+  finalScoreElement.textContent = score
+  gameOverScreen.classList.add("active")
+}
+
+function restartGame() {
+  // Esconder tela de game over
+  gameOverScreen.classList.remove("active")
+
+  // Reiniciar o jogo
+  startGame()
+}
