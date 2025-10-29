@@ -241,6 +241,8 @@ html, body {
   max-width: 260px;
   line-height: 1.5;
 }
+
+/* === CANVAS DO JOGO === */
 #gameCanvas {
   display: none;
   background: linear-gradient(#000015, #220022);
