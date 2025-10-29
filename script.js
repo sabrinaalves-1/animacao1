@@ -114,8 +114,12 @@ function createObstacle() {
   const topHeight = Math.random() * (maxHeight - minHeight) + minHeight
 
   obstacle.innerHTML = `
-    <div class="zombie-hand top" style="height: ${topHeight}px;"></div>
-    <div class="zombie-hand bottom" style="height: ${window.innerHeight - topHeight - gap - 80}px; top: ${topHeight + gap}px;"></div>
+    <div class="zombie-hand top" style="height: ${topHeight}px;">
+      <img src="/images/mao.png" alt="Mão de zumbi">
+    </div>
+    <div class="zombie-hand bottom" style="height: ${window.innerHeight - topHeight - gap - 80}px; top: ${topHeight + gap}px;">
+      <img src="/images/mao.png" alt="Mão de zumbi" style="transform: rotate(180deg);">
+    </div>
   `
 
   obstacle.style.right = "-80px"
@@ -160,7 +164,7 @@ function createGhost() {
 
   const ghost = document.createElement("div")
   ghost.className = "ghost"
-  ghost.innerHTML = '<div class="ghost-body"></div>'
+  ghost.innerHTML = '<div class="ghost-body"><img src="/images/fantasma.png" alt="Fantasma"></div>'
 
   const ghostY = Math.random() * (window.innerHeight - 200) + 50
   ghost.style.top = ghostY + "px"
